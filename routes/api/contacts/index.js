@@ -1,10 +1,10 @@
 const express = require('express');
-const contactsRepository = require('../../repository/contacts');
+const contactsRepository = require('../../../repository/contacts');
 const {
   schemaCreateContact,
   favoriteJoiSchema,
 } = require('./contacts-validation');
-const { validateBody } = require('../../middlewares/validatioin');
+const { validateBody } = require('../../../middlewares/validatioin');
 
 const router = express.Router();
 

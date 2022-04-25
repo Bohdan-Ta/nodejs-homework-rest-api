@@ -1,4 +1,3 @@
-const { json } = require('express/lib/response');
 const Joi = require('joi');
 
 const schemaCreateContact = Joi.object({
