@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new Schema(
   {
-    name: { type: String, default: 'Guest' },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -35,6 +34,7 @@ const userSchema = new Schema(
   },
   { versionKey: false, timestamp: true },
 );
+
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
@@ -42,9 +42,11 @@ userSchema.pre('save', async function (next) {
   }
   next();
 });
-userSchema.method.isValidPassword = async function (password) {
+
+userSchema.methods.isValidPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
 const User = model('user', userSchema);
 
 module.exports = User;

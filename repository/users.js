@@ -1,4 +1,3 @@
-// const { token } = require('morgan');
 const User = require('../models/user');
 
 const findById = async id => {

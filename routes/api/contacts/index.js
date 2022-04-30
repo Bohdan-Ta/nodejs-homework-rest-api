@@ -1,82 +1,51 @@
 const express = require('express');
-const contactsRepository = require('../../../repository/contacts');
+
+const {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updateContact,
+  updateStatus,
+} = require('../../../controlers/contacts');
+
 const {
   schemaCreateContact,
   favoriteJoiSchema,
 } = require('./contacts-validation');
+
 const { validateBody } = require('../../../middlewares/validatioin');
+const guard = require('../../../middlewares/guard');
+
+const { wrapper: wrapperError } = require('../../../middlewares/error-handler');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  const contacts = await contactsRepository.listContacts();
-  res.json({ status: 'success', code: 200, payload: { contacts } });
-});
+router.get('/', guard, listContacts);
 
-router.get('/:contactId', async (req, res, next) => {
-  const contact = await contactsRepository.getContactById(req.params.contactId);
-  if (contact) {
-    return res.json({ status: 'success', code: 200, payload: { contact } });
-  }
-  return res
-    .status(404)
-    .json({ status: 'error', code: 404, message: 'Not found' });
-});
+router.get('/:contactId', guard, wrapperError(getContactById));
 
-router.post('/', validateBody(schemaCreateContact), async (req, res, next) => {
-  const contact = await contactsRepository.addContact(req.body);
-  res.status(201).json({ status: 'success', code: 201, payload: { contact } });
-});
+router.post(
+  '/',
+  guard,
+  validateBody(schemaCreateContact),
+  wrapperError(addContact),
+);
 
-router.delete('/:contactId', async (req, res, next) => {
-  const contact = await contactsRepository.removeContact(req.params.contactId);
-  if (contact) {
-    return res.json({ status: 'success', code: 200, payload: { contact } });
-  }
-  return res
-    .status(404)
-    .json({ status: 'error', code: 404, message: 'Not found' });
-});
+router.delete('/:contactId', guard, wrapperError(removeContact));
 
 router.put(
   '/:contactId',
+  guard,
   validateBody(schemaCreateContact),
-  async (req, res, next) => {
-    const contact = await contactsRepository.updateContact(
-      req.params.contactId,
-      req.body,
-    );
-    if (contact) {
-      return res.json({ status: 'success', code: 200, payload: { contact } });
-    }
-    return res
-      .status(404)
-      .json({ status: 'error', code: 404, message: 'Not found' });
-  },
+  wrapperError(updateContact),
 );
 
 router.patch(
   '/:contactId/favorite',
+  guard,
   validateBody(favoriteJoiSchema),
-  async (req, res, next) => {
-    const contact = await contactsRepository.updateStatusContact(
-      req.params.contactId,
-      req.body,
-    );
-    if (!req.body) {
-      return res.json({
-        status: 'error',
-        code: 400,
-        message: 'missing field favorite',
-      });
-    }
-    if (contact) {
-      return res.json({ status: 'success', code: 200, payload: { contact } });
-    }
-    return res
-      .status(404)
-      .json({ status: 'error', code: 404, message: 'Not found' });
-  },
+  wrapperError(updateStatus),
 );
 
 module.exports = router;

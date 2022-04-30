@@ -1,11 +1,11 @@
 const { HTTP_STATUS_CODE } = require('../libs/constans');
 
 class CustomError extends Error {
-  constructor(message, statusCode, name = 'AppError') {
+  constructor(statusCode, message, name = 'AppError') {
     super(message);
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith('4') ? 'error' : 'fail';
-
+    this.name = name;
     Error.captureStackTrace(this, this.constructor);
   }
 }
