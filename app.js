@@ -6,6 +6,7 @@ const limiter = require('./middlewares/rate-limit');
 
 const contactsRouter = require('./routes/api/contacts');
 const authRouter = require('./routes/api/auth');
+const usersRouter = require('./routes/api/users');
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.use(express.json({ limit: 10000 }));
 
 app.use('/api/auth', authRouter);
 app.use('/api/contacts', contactsRouter);
-app.use('/api/users', authRouter);
+app.use('/api/users', usersRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
