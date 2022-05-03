@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
+
 const { Role } = require('../libs/constans');
 
 const userSchema = new Schema(

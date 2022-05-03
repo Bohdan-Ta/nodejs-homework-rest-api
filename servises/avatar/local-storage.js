@@ -12,7 +12,7 @@ class LocalStorage {
   async save() {
     const destination = path.join(this.static, this.user.id);
     await fs.mkdir(destination, { recursive: true });
-    await fs.rename(this.path.file, path.join(destination, this.file.name));
+    await fs.rename(this.file.path, path.join(destination, this.file.filename));
     const urlOfAvatar = path.normalize(
       path.join(this.user.id, this.file.filename),
     );
