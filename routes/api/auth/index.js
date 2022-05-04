@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post(
   '/registration',
-  limiter(15 * 60 * 1000, 2),
+  limiter(15 * 60 * 1000, 10),
   wrapperError(registration),
 );
 router.post('/login', validateBody(authJoiSchema), wrapperError(login));
