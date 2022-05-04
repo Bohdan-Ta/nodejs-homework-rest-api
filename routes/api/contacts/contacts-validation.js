@@ -16,4 +16,9 @@ const favoriteJoiSchema = Joi.object({
   favorite: Joi.string().valid('false', 'true').required(),
 });
 
-module.exports = { schemaCreateContact, favoriteJoiSchema };
+const authJoiSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(4).required(),
+});
+
+module.exports = { schemaCreateContact, favoriteJoiSchema, authJoiSchema };
