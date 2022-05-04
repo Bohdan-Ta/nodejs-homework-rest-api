@@ -17,8 +17,8 @@ const updateToken = async (id, token) => {
   return await User.findByIdAndUpdate(id, { token });
 };
 
-const updateAvatar = async (id, avatar) => {
-  return await User.findByIdAndUpdate(id, { avatar });
+const updateAvatar = async (id, avatar, cloudId = null) => {
+  return await User.findByIdAndUpdate(id, { avatar, cloudId });
 };
 
 module.exports = {

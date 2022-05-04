@@ -17,4 +17,11 @@ const HTTP_STATUS_CODE = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-module.exports = { HTTP_STATUS_CODE, LIMIT_NUMBERS_CONTACT, Role };
+const FOLDER_CLOUD_AVATAR = 'avatars';
+
+module.exports = {
+  HTTP_STATUS_CODE,
+  LIMIT_NUMBERS_CONTACT,
+  Role,
+  FOLDER_CLOUD_AVATAR,
+};
