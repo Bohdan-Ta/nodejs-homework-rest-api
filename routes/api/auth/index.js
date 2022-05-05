@@ -3,6 +3,8 @@ const {
   registration,
   login,
   logout,
+  verifyUser,
+  reverifyEmail,
   getCurrent,
 } = require('../../../controlers/auth');
 const { validateBody } = require('../../../middlewares/validatioin');
@@ -19,8 +21,10 @@ router.post(
   wrapperError(registration),
 );
 router.post('/login', validateBody(authJoiSchema), wrapperError(login));
-router.post('/logout', guard, wrapperError(logout));
+router.get('/verify-email/:token', wrapperError(verifyUser));
+router.post('/verify-email', wrapperError(reverifyEmail));
 
+router.post('/logout', guard, wrapperError(logout));
 router.get('/current', guard, wrapperError(getCurrent));
 
 module.exports = router;

@@ -55,5 +55,9 @@ class AuthServise {
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
     return token;
   }
+
+  async verifyUser(token) {}
+
+  async reverifyEmail(email) {}
 }
 module.exports = new AuthServise();
