@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const Users = require('../../repository/users');
 const { HTTP_STATUS_CODE } = require('../../libs/constans');
 const { CustomError } = require('../../middlewares/error-handler');
+const EmailService = require('../email/service');
+const SenderNodemailer = require('../email/senders/nodemailer-sender');
+const SenderSendGrid = require('../email/senders/sendgrid-sender');
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 class AuthServise {
@@ -10,7 +13,21 @@ class AuthServise {
     if (user) {
       throw new CustomError(HTTP_STATUS_CODE.CONFLICT, 'User already exist');
     }
+
     const newUser = await Users.create(body);
+
+    const sender = new SenderSendGrid();
+    const emailService = new EmailService(sender);
+
+    try {
+      await emailService.sendEmail(
+        user.email,
+        user.name,
+        user.verifyEmailToken,
+      );
+    } catch (error) {
+      console.log(error);
+    }
 
     return {
       id: newUser.id,
@@ -22,12 +39,6 @@ class AuthServise {
 
   async login({ email, password }) {
     const user = await this.getUser(email, password);
-    if (!user) {
-      throw new CustomError(
-        HTTP_STATUS_CODE.UNAUTHORIZED,
-        '"Email or password is wrong"',
-      );
-    }
     const token = this.generateToken(user);
     await Users.updateToken(user.id, token);
     return { token };
@@ -40,13 +51,16 @@ class AuthServise {
   async getUser(email, password) {
     const user = await Users.findByEmail(email);
     if (!user) {
-      return null;
+      throw new CustomError(HTTP_STATUS_CODE.NOT_FOUND, 'User not found');
     }
 
     if (!(await user?.isValidPassword(password))) {
-      return null;
+      throw new CustomError(HTTP_STATUS_CODE.UNAUTHORIZED, 'Password is wrong');
     }
 
+    if (!user.isVerify) {
+      throw new CustomError(HTTP_STATUS_CODE.BAD_REQUEST, 'User not verified');
+    }
     return user;
   }
 
@@ -56,8 +70,51 @@ class AuthServise {
     return token;
   }
 
-  async verifyUser(token) {}
+  async verifyUser(token) {
+    const user = await Users.findByToken(token);
+    if (!user) {
+      throw new CustomError(HTTP_STATUS_CODE.BAD_REQUEST, 'User not found');
+    }
+    if (user && user.isVerify) {
+      throw new CustomError(
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        'User already verify',
+      );
+    }
+    await Users.verifyUser(user.id, null);
+    return user;
+  }
 
-  async reverifyEmail(email) {}
+  async reverifyEmail(email) {
+    const user = await Users.findByEmail(email);
+    if (!user) {
+      throw new CustomError(
+        HTTP_STATUS_CODE.NOT_FOUND,
+        'Invalid mail. User not found',
+      );
+    }
+    if (user && user.isVerify) {
+      throw new CustomError(
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        'User already verify',
+      );
+    }
+    const sender = new SenderNodemailer();
+    const emailService = new EmailService(sender);
+
+    try {
+      await emailService.sendEmail(
+        user.email,
+        user.name,
+        user.verifyEmailToken,
+      );
+    } catch (error) {
+      throw new CustomError(
+        HTTP_STATUS_CODE.SERVICE_UNAVAILABLE,
+        'Error sending message',
+      );
+    }
+  }
 }
+
 module.exports = new AuthServise();

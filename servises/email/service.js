@@ -3,7 +3,7 @@ const Mailgen = require('mailgen');
 class EmailServise {
   constructor(sender) {
     this.sender = sender;
-    this.link = `http://localhost:3000`;
+    this.link = ` https://a8a5-93-171-240-102.eu.ngrok.io`;
     this.mailgen = new Mailgen({
       theme: 'default',
       produc: { name: `My app`, link: this.link },
@@ -20,7 +20,7 @@ class EmailServise {
           button: {
             color: '#22BC66',
             text: 'Confirm your account',
-            link: `${this.link}/api/auth/verify-email/${token}`,
+            link: `${this.link}/api/auth/verify/${token}`,
           },
         },
         outro:
@@ -37,13 +37,9 @@ class EmailServise {
       subject: 'Welcome to My app',
       html: emailTemplate,
     };
-    try {
-      const result = await this.sender.send(message);
-      console.log(result);
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
+    const result = await this.sender.send(message);
+    return result;
   }
 }
+
+module.exports = EmailServise;
