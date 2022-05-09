@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
+const { randomUUID } = require('crypto');
 
 const { Role } = require('../libs/constans');
 
@@ -43,7 +44,13 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    isActive: { type: Boolean, default: false },
+    verifyEmailToken: {
+      type: String,
+      default: randomUUID,
+    },
   },
+
   { versionKey: false, timestamp: true },
 );
 
