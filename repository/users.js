@@ -8,13 +8,13 @@ const findByEmail = async email => {
   return await User.findOne({ email });
 };
 
-const findByToken = async verifyEmailToken => {
-  return await User.findOne({ verifyEmailToken });
+const findByToken = async verificationToken => {
+  return await User.findOne({ verificationToken });
 };
 
 const verifyUser = async id => {
   return await User.findByIdAndUpdate(id, {
-    isVerify: true,
+    verify: true,
   });
 };
 

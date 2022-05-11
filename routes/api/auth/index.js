@@ -21,7 +21,7 @@ router.post(
   wrapperError(registration),
 );
 router.post('/login', validateBody(authJoiSchema), wrapperError(login));
-router.get('/verify/:token', wrapperError(verifyUser));
+router.get('/verify/:verificationToken', wrapperError(verifyUser));
 router.post('/verify', wrapperError(reverifyEmail));
 
 router.post('/logout', guard, wrapperError(logout));

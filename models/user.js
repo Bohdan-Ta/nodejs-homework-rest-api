@@ -44,8 +44,8 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
-    isActive: { type: Boolean, default: false },
-    verifyEmailToken: {
+    verify: { type: Boolean, default: false },
+    verificationToken: {
       type: String,
       default: randomUUID,
     },

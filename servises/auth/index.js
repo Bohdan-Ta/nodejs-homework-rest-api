@@ -23,7 +23,7 @@ class AuthServise {
       await emailService.sendEmail(
         user.email,
         user.name,
-        user.verifyEmailToken,
+        user.verificationToken,
       );
     } catch (error) {
       console.log(error);
@@ -58,7 +58,7 @@ class AuthServise {
       throw new CustomError(HTTP_STATUS_CODE.UNAUTHORIZED, 'Password is wrong');
     }
 
-    if (!user.isVerify) {
+    if (!user.verify) {
       throw new CustomError(HTTP_STATUS_CODE.BAD_REQUEST, 'User not verified');
     }
     return user;
@@ -75,7 +75,7 @@ class AuthServise {
     if (!user) {
       throw new CustomError(HTTP_STATUS_CODE.BAD_REQUEST, 'User not found');
     }
-    if (user && user.isVerify) {
+    if (user && user.verify) {
       throw new CustomError(
         HTTP_STATUS_CODE.BAD_REQUEST,
         'User already verify',
@@ -93,7 +93,7 @@ class AuthServise {
         'Invalid mail. User not found',
       );
     }
-    if (user && user.isVerify) {
+    if (user && user.verify) {
       throw new CustomError(
         HTTP_STATUS_CODE.BAD_REQUEST,
         'User already verify',
@@ -106,7 +106,7 @@ class AuthServise {
       await emailService.sendEmail(
         user.email,
         user.name,
-        user.verifyEmailToken,
+        user.verificationToken,
       );
     } catch (error) {
       throw new CustomError(

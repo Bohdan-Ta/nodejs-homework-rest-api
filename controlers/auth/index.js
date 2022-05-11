@@ -48,7 +48,7 @@ const reverifyEmail = async (req, res) => {
   return res.status(HTTP_STATUS_CODE.OK).json({
     status: 'success',
     code: HTTP_STATUS_CODE.OK,
-    date: { message: `Letter sent ok` },
+    date: { message: `Verification email sent` },
   });
 };
 module.exports = {
